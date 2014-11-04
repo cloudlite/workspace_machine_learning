@@ -28,10 +28,9 @@ def show_plot(data, class_label):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.scatter(data[:, 0], data[:, 1], c=class_label)
-    ax.settitle()
-    # x = [0, 30]
-    # y = [theta[0] + theta[1] * x[0], theta[0] + theta[1] * x[1]]
-    # plt.plot(x, y)
+    ax.set_title('Scatter plot of training data')
+    ax.set_xlabel('Exam 1 score')
+    ax.set_ylabel('Exam 2 score')
     plt.show()
 
 

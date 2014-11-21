@@ -11,7 +11,7 @@ def file2matrix(filename):
     res = zeros((numOfLines, 3))
     classLabelVector = []
 
-    colorDict = {'1':'red', '2':'blue', '3':'green'}
+    colorDict = {'1': 'red', '2': 'blue', '3': 'green'}
     i = 0
     for line in lines:
         args = line.split()
@@ -21,8 +21,9 @@ def file2matrix(filename):
 
     return res, classLabelVector
 
+
 data, label = file2matrix("datingTestSet2.txt")
 fig = plt.figure()
 ax = fig.add_subplot(111)
-ax.scatter(data[:,1], data[:,2], c=label)
+ax.scatter(data[:, 1], data[:, 2], c=label)
 plt.show()

@@ -1,6 +1,5 @@
 __author__ = 'leon'
-
-from numpy import *
+import numpy as np
 
 
 def loadDataSet():
@@ -34,14 +33,14 @@ def createVocabList(dataset):
     return list(vocabSet)
 
 
-def setOfWords2Vec(vocabList, inputSet):
+def Doc2Vec(vocabList, inputDoc):
     """
     :param vocabList: a set of all possible words
-    :param inputSet: input document to process
-    :return: a vector(list) in the same size of vocabList, 1 - the word in vocablist is in inputSet, 0 - not in inputSet
+    :param inputDoc: input document to process
+    :return: a vector(list) in the same size of vocabList, 1 - the word in vocablist is in inputDoc, 0 - not in inputDoc
     """
     returnVec = [0] * len(vocabList)
-    for word in inputSet:
+    for word in inputDoc:
         if word in vocabList:
             returnVec[vocabList.index(word)] = 1
         else:
@@ -61,10 +60,10 @@ def trainNB0(trainMatrix, trainCategory):
     numWords = len(trainMatrix[0])
 
     pAbusive = sum(trainCategory) / float(numTrainDocs)  # probability of abusive emails
-    p0num = zeros(numWords)  # vector
-    p1num = zeros(numWords)  # vector
-    p0Denom = 0.0
-    p1Denom = 0.0
+    p0num = np.ones(numWords)  # vector
+    p1num = np.ones(numWords)  # vector
+    p0Denom = 2.0
+    p1Denom = 2.0
     for i in range(numTrainDocs):
         if trainCategory[i] == 1:  # abusive
             p1num += trainMatrix[i]
@@ -73,8 +72,8 @@ def trainNB0(trainMatrix, trainCategory):
             p0num += trainMatrix[i]
             p0Denom += sum(trainMatrix[i])
 
-    p0Vect = math.log(p0num / p0Denom)  # vector devide
-    p1Vect = math.log(p1num / p1Denom)
+    p0Vect = np.log(p0num / p0Denom)  # vector devide
+    p1Vect = np.log(p1num / p1Denom)
     return p0Vect, p1Vect, pAbusive
 
 
@@ -86,18 +85,36 @@ def classifyNB(vec2Classify, p0Vect, p1Vect, pClass1):
     :param pClass1: known value
     :return: 1 - abusive, 0 - normal
     """
-    p0 = sum(vec2Classify * p0Vect) + math.log(1 - pClass1)
-    p1 = sum(vec2Classify * p1Vect) + math.log(pClass1)
+    p0 = sum(vec2Classify * p0Vect) + np.log(1 - pClass1)
+    p1 = sum(vec2Classify * p1Vect) + np.log(pClass1)
     if p0 > p1:
         return 0
     else:
         return 1
 
 
-def test1():
-    listOfEmails, listOfClasses = loadDataSet()
+def test1(testDoc):
+    listOfEmails, listOfClassification = loadDataSet()
+    vocabList = createVocabList(listOfEmails)
+    trainMatrix = []
+    for email in listOfEmails:
+        trainMatrix.append(Doc2Vec(vocabList, email))
+    p0Vect, p1Vect, pAbusive = trainNB0(trainMatrix, listOfClassification)
+    testDocVect = Doc2Vec(vocabList, testDoc)
+    print testDoc, 'classified as: ', classifyNB(testDocVect, p0Vect, p1Vect, pAbusive)
+
+
+def test2(testDoc):
+    """
+    :param testDoc: email to classify
+    :return: classification result of target email
+    """
+    # TODO: taining set based on dir ./emails
 
 
 if __name__ == '__main__':
-    test1()
+    email = ['love', 'my', 'dalmation']
+    test1(email)
+    email = ['stupid', 'garbage']
+    test1(email)
 

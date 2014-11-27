@@ -1,7 +1,9 @@
 __author__ = 'leon'
 import numpy as np
 
-
+"""
+Author: Yucheng
+"""
 def loadDataSet():
     """ Sample data set """
     postingList = [['my', 'dog', 'has', 'flea', 'problems', 'help', 'please'],

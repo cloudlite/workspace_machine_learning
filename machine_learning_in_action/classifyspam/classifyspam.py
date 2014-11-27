@@ -1,9 +1,8 @@
 __author__ = 'leon'
 import numpy as np
+import os
 
-"""
-Author: Yucheng
-"""
+
 def loadDataSet():
     """ Sample data set """
     postingList = [['my', 'dog', 'has', 'flea', 'problems', 'help', 'please'],
@@ -20,8 +19,28 @@ def loadDataSetFromFolder(dir):
     """
     Return: list of emails, class vector of each email
     """
-    # TODO: load emails
-    # TODO: abused email, normal email
+    email_list = []
+    classVec = [0 for i in range(25)] + [1 for i in range(25)]
+
+    try:
+        file_no = 1
+        while True:
+            fr = open(dir + '/' + 'normal/' + str(file_no) + '.txt').read()
+            email_list.append(fr.split())
+            file_no += 1
+    except IOError:
+        print 'File not exist.'
+
+    try:
+        file_no = 1
+        while True:
+            fr = open(dir + '/' + 'spam/' + str(file_no) + '.txt').read()
+            email_list.append(fr.split())
+            file_no += 1
+    except IOError:
+        print 'File not exit.'
+
+    return email_list, classVec
 
 
 def createVocabList(dataset):
@@ -111,12 +130,27 @@ def test2(testDoc):
     :param testDoc: email to classify
     :return: classification result of target email
     """
-    # TODO: taining set based on dir ./emails
+    email_list, classVec = loadDataSetFromFolder(
+        '/Users/cloudlite/Developer/GitHub/workspace_machine_learning/machine_learning_in_action/classifyspam/emails')
+    vocabList = createVocabList(email_list)
+    trainMatrix = []
+    for email in email_list:
+        trainMatrix.append(Doc2Vec(vocabList, email))
+    p0Vect, p1Vect, pAbusive = trainNB0(trainMatrix, classVec)
+    testDocVect = Doc2Vec(vocabList, testDoc)
+    print testDoc
+    print 'classified as: '
+    if classifyNB(testDocVect, p0Vect, p1Vect, pAbusive) == 1:
+        print 'Spam email.'
+    else:
+        print 'Normal email'
 
 
 if __name__ == '__main__':
-    email = ['love', 'my', 'dalmation']
-    test1(email)
-    email = ['stupid', 'garbage']
-    test1(email)
+    testDoc = "Microsoft Office Professional Plus 2007/2010 $129".split()
+    test2(testDoc)
+
+
+
+
 

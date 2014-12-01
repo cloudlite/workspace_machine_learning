@@ -147,10 +147,5 @@ def test2(testDoc):
 
 
 if __name__ == '__main__':
-    testDoc = "Microsoft Office Professional Plus 2007/2010 $129".split()
-    test2(testDoc)
-
-
-
-
-
+    target = "Microsoft Office Professional Plus 2007/2010 $129".split()
+    test2(target)
